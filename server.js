@@ -842,7 +842,12 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Access your app at: http://localhost:${PORT}`);
+
+  if (process.env.RENDER) {
+    console.log(`🌍 Live app: https://${process.env.RENDER_EXTERNAL_HOSTNAME}`);
+  } else {
+    console.log(`📱 Access your app locally at: http://localhost:${PORT}`);
+  }
 });
 
 module.exports = app;
