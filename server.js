@@ -291,6 +291,34 @@ app.get('/api/auth/profile', authenticateToken, (req, res) => {
 });
 
 
+// Forgot Password Route
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: 'Email not found' });
+    }
+
+    // Generate a temporary reset token (valid 1 hour)
+    const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+    // In production, send email with link: https://yourdomain.com/reset-password/<resetToken>
+    // For now, just return token in response for testing
+    res.json({
+      message: 'Password reset link generated.',
+      resetToken
+    });
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 // Reset Password Route
 app.post('/api/auth/reset-password', async (req, res) => {
   try {
