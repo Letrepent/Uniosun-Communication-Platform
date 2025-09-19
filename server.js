@@ -32,6 +32,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Test transporter
+transporter.verify((error, success) => {
+  if (error) console.log('Email transporter error:', error);
+  else console.log('Server is ready to send emails');
+});
+
 
 // Middleware
 app.use(cors());
