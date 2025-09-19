@@ -157,7 +157,7 @@
 
 
         .auth-form {
-            background: white;
+            background: rgb(206, 62, 62);
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -999,7 +999,9 @@
         let socket = null;
         let currentChatClass = null;
         let selectedFiles = [];
-        const API_BASE = 'http://localhost:3000/api';
+        const API_BASE = window.location.origin + '/api';
+
+
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -1274,9 +1276,8 @@
             document.getElementById('sidebar').classList.toggle('collapsed');
         }
 
-        // Socket.IO functions
         function initializeSocket() {
-            socket = io('http://localhost:3000');
+            socket = io(window.location.origin);
             
             socket.on('connect', () => {
                 console.log('Connected to server for notifications');
