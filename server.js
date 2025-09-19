@@ -195,7 +195,7 @@ if (!strongPassword.test(password)) {
     });
 }
     // Validate school email
-    const schoolDomain = process.env.SCHOOL_DOMAIN || 'uniosun.edu.ng';
+    const schoolDomain = process.env.SCHOOL_DOMAIN || 'gmail.com';
     if (!email.includes('@') || !email.endsWith(`@${schoolDomain}`)) {
       return res.status(400).json({ error: `Please use your school email address ending with @${schoolDomain}` });
     }
@@ -288,6 +288,33 @@ app.get('/api/auth/profile', authenticateToken, (req, res) => {
       matricNumber: req.user.matricNumber
     }
   });
+});
+
+
+// Reset Password Route
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: 'Token and new password are required' });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Hash the new password
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: 'Password has been reset successfully' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(400).json({ error: 'Invalid or expired token' });
+  }
 });
 
 // CLASS MANAGEMENT ROUTES
