@@ -289,6 +289,42 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Forgot Password Route
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ error: 'Email not found' });
+
+// Generate a JWT token for this user
+const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+// Determine base URL depending on environment
+const baseURL = process.env.BASE_URL || 'https://chat3080.onrender.com';
+
+// In production, set BASE_URL in your .env to your live domain like: https://yourwebsite.com
+
+// Construct reset link
+const resetLink = `${baseURL}/reset-password.html?token=${resetToken}`;
+
+    // Send email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset',
+      html: `Click <a href="${resetLink}">here</a> to reset your password. Link expires in 1 hour.`,
+    });
+
+    res.json({ message: 'Password reset link sent to your email.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
 // Get current user profile
 app.get('/api/auth/profile', authenticateToken, (req, res) => {
   res.json({
@@ -303,30 +339,6 @@ app.get('/api/auth/profile', authenticateToken, (req, res) => {
 });
 
 
-// Forgot Password Route
-app.post('/api/auth/forgot-password', async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: 'Email not found' });
-
-    const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
-    const resetLink = `https://yourdomain.com/reset-password?token=${resetToken}`;
-
-    // Send email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Password Reset',
-      html: `Click <a href="${resetLink}">here</a> to reset your password. Link expires in 1 hour.`,
-    });
-
-    res.json({ message: 'Password reset link sent to your email.' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 
 
 
