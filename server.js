@@ -195,7 +195,7 @@ if (!strongPassword.test(password)) {
     });
 }
     // Validate school email
-    const schoolDomain = process.env.SCHOOL_DOMAIN || 'schooldomain.edu';
+    const schoolDomain = process.env.SCHOOL_DOMAIN || 'uniosun.edu.ng';
     if (!email.includes('@') || !email.endsWith(`@${schoolDomain}`)) {
       return res.status(400).json({ error: `Please use your school email address ending with @${schoolDomain}` });
     }
