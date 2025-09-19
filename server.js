@@ -11,6 +11,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +22,16 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or another email provider
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 
 // Middleware
 app.use(cors());
@@ -295,28 +307,27 @@ app.get('/api/auth/profile', authenticateToken, (req, res) => {
 app.post('/api/auth/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
-
-    // Check if user exists
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ error: 'Email not found' });
-    }
+    if (!user) return res.status(404).json({ error: 'Email not found' });
 
-    // Generate a temporary reset token (valid 1 hour)
     const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    const resetLink = `https://yourdomain.com/reset-password?token=${resetToken}`;
 
-    // In production, send email with link: https://yourdomain.com/reset-password/<resetToken>
-    // For now, just return token in response for testing
-    res.json({
-      message: 'Password reset link generated.',
-      resetToken
+    // Send email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset',
+      html: `Click <a href="${resetLink}">here</a> to reset your password. Link expires in 1 hour.`,
     });
 
-  } catch (error) {
-    console.error('Forgot password error:', error);
+    res.json({ message: 'Password reset link sent to your email.' });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 
 // Reset Password Route

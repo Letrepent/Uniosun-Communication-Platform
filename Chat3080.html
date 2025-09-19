@@ -18,7 +18,7 @@
         padding: 0;
         font-family: Arial, sans-serif;
         background-image: url('Logos.jpeg'); /* Replace with your image path */
-        background-size: contain;
+        background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         min-height: 100vh;
@@ -692,6 +692,7 @@
         <form id="forgotForm">
     <input type="email" id="forgotEmail" placeholder="Enter your school email" required>
     <button type="submit">Reset Password</button>
+    <p><a href="#" id="backToLogin">Back to Login</a></p>
     <div id="forgotError" class="error"></div>
     <div id="forgotSuccess" class="success"></div>
 </form>
@@ -1122,6 +1123,13 @@ async function handleForgotPassword(e) {
 
 // 3️⃣ Hide forgot password form initially
 document.getElementById('forgotForm').style.display = 'none';
+
+document.getElementById('backToLogin').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+});
+
 
 // 4️⃣ Event listeners
 document.getElementById('loginForm').addEventListener('submit', handleLogin);
