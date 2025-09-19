@@ -186,12 +186,12 @@ app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name, role, matricNumber } = req.body;
     // Strong password regex: 
-  // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character
- const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 
+ const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z]{8,}/;
 
 if (!strongPassword.test(password)) {
     return res.status(400).json({ 
-        error: 'Password must be at least 8 characters and include: uppercase letter, lowercase letter, number, and special character (@$!%*?&)' 
+        error: 'Password must be at least 8 characters and include: uppercase letter, lowercase letter, number)' 
     });
 }
     // Validate school email
