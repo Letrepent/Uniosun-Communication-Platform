@@ -54,7 +54,7 @@ transporter.verify((error, success) => {
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
-app.use(express.static('./')); // Serve static files including index.html
+ // Serve static files including index.html
 
 // Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
