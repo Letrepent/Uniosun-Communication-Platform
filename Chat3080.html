@@ -237,7 +237,7 @@
         backdrop-filter: blur(10px);
         padding: 30px;
         border-radius: 12px;
-        box-shadow: 0 8px 32px rgb(222, 221, 221);
+        box-shadow: 0 8px 32px rgb(57, 55, 55);
         width: 100%;
         max-width: 400px;
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1095,17 +1095,16 @@
         }
     }
 
-    /* Dark Mode Support */
-    @media (prefers-color-scheme: dark) {
-        .auth-form,
-        .class-card,
-        .assignments-list,
-        .chat-container,
-        .modal-content {
-            background: rgba(40, 40, 50, 0.95);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+   /* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .class-card,             /* ← .auth-form removed */
+    .assignments-list,
+    .chat-container,
+    .modal-content {
+        background: rgba(40, 40, 50, 0.95);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
         
         .section-title,
         .class-name,
