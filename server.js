@@ -23,6 +23,17 @@ const io = socketIo(server, {
   }
 });
 
+// ✅ Allow Netlify and local development
+app.use(cors({
+  origin: [
+    "http://localhost:5500",           // local testing
+    "http://127.0.0.1:5500",           // another local variation
+    "https://chat3080.netlify.app" // replace with your real Netlify domain
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail', // or another email provider
